@@ -1,0 +1,6 @@
+[submodule "hyunlabutils"]
+	path = hyunlabutils
+	url = https://github.com/Hyun-Research-Lab/hyunlabutils.git
+[submodule "crazyflie-firmware"]
+	path = crazyflie-firmware
+	url = https://github.com/Hyun-Research-Lab/crazyflie-firmware.git

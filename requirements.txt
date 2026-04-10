@@ -1,0 +1,4 @@
+cflib==0.1.28
+motioncapture
+numpy
+-e hyunlabutils/.
