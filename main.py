@@ -15,22 +15,22 @@ from cflib.utils.reset_estimator import reset_estimator
 from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncLogger import SyncLogger
 
+
+# TODO: Set the mocap system type, can be one of: 'vicon', 'optitrack', 'optitrack_closed_source', 'qualisys', 'nokov', 'vrpn', 'motionanalysis'
 mocap_system_type = 'vicon'
 
-# Host name of the mocap computer
+# TODO: Set the host name of the mocap computer
 # Make sure you are connected to the same network
 host_name = '192.168.1.115'
 
-# URI of the Crazyflie
+# TODO: Set the URI of the Crazyflie
 uri = 'radio://0/80/2M/E7E7E7E707'
 
-# Change the rigid body name to match the mocap object name
+# TODO: Change the rigid body name to match the mocap object name
 rigid_body_name = 'cf07'
 
-cflib.crtp.init_drivers()
 
-mocap_thread = MocapThread(mocap_system_type, host_name, rigid_body_name)
-
+# Settings
 NOMINAL_CONTROLLER_PID = '1' # Built-in PID controller
 NOMINAL_CONTROLLER_LQR = '2' # Nominal LQR controller (31) in [1]
 
@@ -38,6 +38,19 @@ LEARNING_TYPE_DISABLED = '0' # Learning is disabled (used for training)
 LEARNING_TYPE_LINEAR_MODEL = '1' # Learning based on the linearlized nominal model (30) in [1]
 LEARNING_TYPE_NONLINEAR_MODEL = '2' # learning based on the full nonlinear dynamics model (27) in [1]
 # LEARNING_TYPE_TRAINING = '3' # Add exploration noise (unused)
+
+
+# Initial conditions
+x0 = (-0.35,  -0.2,  2.0, 0.0, 0.0,  3.0) # Training
+x1 = ( -1.5,  -0.2,  2.0, 0.0, 0.0,  3.0) # Fig. 3 (green)
+x2 = (-1.75,   0.3,  2.0, 0.0, 0.0,  3.0) # Fig. 3 (purple)
+x3 = (  1.5,   0.3,  2.0, 0.0, 0.0,  3.0) # Fig. 3 (blue)
+x4 = ( 1.75,  -0.2,  2.0, 0.0, 0.0,  3.0) # Fig. 3 (red)
+x5 = (-0.75,  -0.1,  2.5, 0.0, 0.0,  1.5) # Fig. 4 (yellow)
+x6 = (-1.13, -0.15, 2.25, 0.0, 0.0, 2.25) # Fig. 4 (mint)
+x7 = (-1.35, -0.18,  2.1, 0.0, 0.0,  2.7) # Fig. 4 (magenta)
+x8 = (-1.43, -0.19, 2.05, 0.0, 0.0, 2.85) # Fig. 4 (navy blue)
+
 
 # Helper functions for moving the Crazyflie
 def moveToPoseLQR(cf: Crazyflie, z, time_s):
@@ -64,6 +77,11 @@ def moveToPose(cf: Crazyflie, pose: tuple, time_s):
             cf.commander.send_zdistance_setpoint(np.rad2deg(roll), np.rad2deg(pitch), 0.0, z)
             time.sleep(0.1)
 
+
+cflib.crtp.init_drivers()
+
+mocap_thread = MocapThread(mocap_system_type, host_name, rigid_body_name)
+
 with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
     cf = scf.cf
 
@@ -71,7 +89,7 @@ with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
     mocap_thread.cf = cf
 
     # Set initial parameters
-    cf.param.set_value('stabilizer.estimator', '2') # 2: Kalman 3: UKF
+    cf.param.set_value('stabilizer.estimator', '2') # 2: Kalman
     cf.param.set_value('ILBC.nominal_controller', NOMINAL_CONTROLLER_PID)
     cf.param.set_value('ILBC.learning_type', LEARNING_TYPE_DISABLED)
 
@@ -101,10 +119,12 @@ with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         moveToPosePID(cf, (0.0, 0.0, 1.5, 0.0, 0.0, 0.0), 5.0)
 
         # Move to an initial condition
-        # moveToPosePID(cf, (-1.0, -1.0, 1.25, 0.0, 0.0, 3.0), 5.0) # testing
-        moveToPosePID(cf, (-1.97925169, 0.00562378, 1.49577329, 0.0, 0.0, -2.30071692), 5.0) # training
+        # TODO: Choose an initial condition to use (x0, x1, ..., x8)
+        moveToPosePID(cf, x0, 5.0)
 
         # Go to the equilibrium with LQR
+        # TODO: If collecting data for training, use LEARNING_TYPE_DISABLED
+        #       If testing, use LEARNING_TYPE_LINEAR_MODEL or LEARNING_TYPE_NONLINEAR_MODEL
         cf.param.set_value('ILBC.learning_type', LEARNING_TYPE_DISABLED)
         moveToPoseLQR(cf, 3.0, 8.0)
 

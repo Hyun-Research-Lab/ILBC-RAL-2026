@@ -1,4 +1,5 @@
 cflib==0.1.28
+cfclient==2025.2
 motioncapture
 numpy
 -e hyunlabutils/.

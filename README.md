@@ -30,7 +30,7 @@ cd crazyflie-firmware/ILBC-RAL-2026
 make cf2_defconfig
 make -j8
 ```
-To flash the firmware, run:
+To flash the firmware, put the Crazyflie in bootloader mode by holding the power button until the blue lights start flashing and then run:
 ```
 make cload
 ```
@@ -39,4 +39,7 @@ For more information, refer to the [Crazyflie documentation](./crazyflie-firmwar
 The system also relies on the usd card deck for logging, see [usd_deck.md](./usd_deck.md) to set it up.
 
 ## Run the script
-In `main.py`, change the host name, URI, and rigid body name to match your system.
+In `main.py`, change the mocap system type, host name, URI, and rigid body name to match your system. Then, choose an inital condition (line 123) and the type of experiment to run (line 128). See the comments in the code for guidance. Then to run an experiment, simply execute the script:
+```
+python main.py
+```
