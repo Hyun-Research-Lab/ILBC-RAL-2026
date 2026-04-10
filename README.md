@@ -43,3 +43,16 @@ In `main.py`, change the mocap system type, host name, URI, and rigid body name 
 ```
 python main.py
 ```
+
+## Data
+Raw data from the experiments in the paper can be found in the `data` folder. Units/explanation of each variable:
+- timestamp: milliseconds
+- stateEstimate.x/y/z: m
+- stateEstimate.vx/vy/vz: m/s
+- stateEstimate.roll/pitch/yaw: deg
+- gyro.x/y/z: deg/s
+- ILBC.nominal_controller: 1: PID, 2: LQR
+- ILBC.nominal_thrust: N (thrust calculated by the nominal controller)
+- ILBC.nominal_torqueX/Y/Z: Nm (torque calculated by the nominal controller)
+- ILBC.full_thrust: N (actual thrust sent to the motors)
+- ILBC.full_torqueX/Y/Z: Nm (actual torque sent to the motors)
