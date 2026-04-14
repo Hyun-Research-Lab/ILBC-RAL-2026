@@ -24,7 +24,7 @@ mocap_system_type = 'vicon'
 host_name = '192.168.1.115'
 
 # TODO: Set the URI of the Crazyflie
-uri = 'radio://0/80/2M/E7E7E7E707'
+uri = 'radio://0/80/2M/E7E7E7E7E7'
 
 # TODO: Change the rigid body name to match the mocap object name
 rigid_body_name = 'cf07'
@@ -37,7 +37,6 @@ NOMINAL_CONTROLLER_LQR = '2' # Nominal LQR controller (31) in [1]
 LEARNING_TYPE_DISABLED = '0' # Learning is disabled (used for training)
 LEARNING_TYPE_LINEAR_MODEL = '1' # Learning based on the linearlized nominal model (30) in [1]
 LEARNING_TYPE_NONLINEAR_MODEL = '2' # learning based on the full nonlinear dynamics model (27) in [1]
-# LEARNING_TYPE_TRAINING = '3' # Add exploration noise (unused)
 
 
 # Initial conditions
@@ -113,7 +112,7 @@ with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         cf.param.set_value('usd.logging', '1')
 
         # Print console data
-        cf.console.receivedChar.add_callback(print)
+        cf.console.receivedChar.add_callback(lambda s: print(s, end=''))
 
         # Takeoff to 1.5m using PID
         moveToPosePID(cf, (0.0, 0.0, 1.5, 0.0, 0.0, 0.0), 5.0)
